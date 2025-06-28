@@ -1,20 +1,5 @@
 # 🚀 Networking QR Code Generator
 
-<div align="center">
-![Networking QR](https://img.shields.io/badge/QR-Networking-blue)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
-![License](https://img.shields.io/badge/License-MIT-green)
-
-**Transform your networking game with professional QR codes that connect you across all platforms!**
-
-[🌟 Demo](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#demo) • [🚀 Features](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#features) • [💻 Installation](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#installation) • [📱 Usage](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#usage) • [🤝 Contributing](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#contributing)
-
-</div>
----
-
-
 ---
 
 ## 📋 Table of Contents
