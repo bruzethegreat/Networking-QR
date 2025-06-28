@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Networking QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .github-star-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .github-star-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #24292e;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #444;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .github-star-btn:hover {
+            background: #444;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .github-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .star-icon {
+            width: 16px;
+            height: 16px;
+            fill: #ffd700;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #111;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+            border: 1px solid #333;
+            margin-top: 80px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #222;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .service-option {
+            padding: 16px;
+            border: 2px solid #333;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #222;
+        }
+
+        .service-option:hover {
+            border-color: #555;
+            transform: translateY(-2px);
+        }
+
+        .service-option.active {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .service-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+        }
+
+        .service-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #0056CC;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .qr-result {
+            margin-top: 40px;
+            text-align: center;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .qr-canvas {
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+
+        .download-btn {
+            background: #34C759;
+            margin-top: 20px;
+        }
+
+        .download-btn:hover {
+            background: #28A745;
+        }
+
+        .dynamic-fields {
+            display: none;
+        }
+
+        .dynamic-fields.show {
+            display: block;
+        }
+
+        .preview-text {
+            background: #333;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #444;
+        }
+
+        @media (max-width: 768px) {
+            .github-star-container {
+                position: relative;
+                top: 0;
+                right: 0;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .container {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="github-star-container">
+        <a href="https://github.com/bruzethegreat/Networking-QR" target="_blank" class="github-star-btn">
+            <svg class="github-icon" viewBox="0 0 24 24">
+                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            <svg class="star-icon" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Star on GitHub
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>Networking QR Code</h1>
+        
+        <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+            <label>Select Service</label>
+            <div class="service-grid">
+                <div class="service-option" data-service="whatsapp">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="#25D366">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.63"/>
+                    </svg>
+                    <div class="service-name">WhatsApp</div>
+                </div>
+                
+                <div class="service-option" data-service="linkedin">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="#0A66C2">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    <div class="service-name">LinkedIn</div>
+                </div>
+                
+                <div class="service-option" data-service="email">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="#EA4335">
+                        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h.91L12 11.64l9.455-7.819h.909c.904 0 1.636.732 1.636 1.636z"/>
+                    </svg>
+                    <div class="service-name">Email</div>
+                </div>
+                
+                <div class="service-option" data-service="github">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="#fff">
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                    </svg>
+                    <div class="service-name">GitHub</div>
+                </div>
+                
+                <div class="service-option" data-service="twitter">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="#1DA1F2">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <div class="service-name">Twitter/X</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="whatsapp-fields" class="dynamic-fields">
+            <div class="form-group">
+                <label for="whatsapp-number">WhatsApp Number (with country code)</label>
+                <input type="text" id="whatsapp-number" placeholder="e.g., +91234567890">
+            </div>
+            <div class="form-group">
+                <label for="whatsapp-message">Welcome Message <span id="char-count" style="color: #666; font-size: 12px;">(0/220)</span></label>
+                <textarea id="whatsapp-message" placeholder="Hi! Thanks for connecting with me..." maxlength="220"></textarea>
+            </div>
+        </div>
+
+        <div id="linkedin-fields" class="dynamic-fields">
+            <div class="form-group">
+                <label for="linkedin-url">LinkedIn Profile URL</label>
+                <input type="url" id="linkedin-url" placeholder="https://www.linkedin.com/in/username/">
+            </div>
+            <div class="form-group">
+                <label for="linkedin-message">Connection Message</label>
+                <textarea id="linkedin-message" placeholder="Let's connect and grow our professional network!"></textarea>
+            </div>
+        </div>
+
+        <div id="email-fields" class="dynamic-fields">
+            <div class="form-group">
+                <label for="email-address">Email Address</label>
+                <input type="email" id="email-address" placeholder="your.email@example.com">
+            </div>
+            <div class="form-group">
+                <label for="email-subject">Subject Line</label>
+                <input type="text" id="email-subject" placeholder="Let's Connect - [Your Name]">
+            </div>
+            <div class="form-group">
+                <label for="email-message">Email Message</label>
+                <textarea id="email-message" placeholder="Hi there! It was great meeting you..."></textarea>
+            </div>
+        </div>
+
+        <div id="github-fields" class="dynamic-fields">
+            <div class="form-group">
+                <label for="github-url">GitHub Profile URL</label>
+                <input type="url" id="github-url" placeholder="https://github.com/username">
+            </div>
+        </div>
+
+        <div id="twitter-fields" class="dynamic-fields">
+            <div class="form-group">
+                <label for="twitter-url">Twitter/X Profile URL</label>
+                <input type="url" id="twitter-url" placeholder="https://twitter.com/username">
+            </div>
+        </div>
+
+        <div class="preview-text" id="preview" style="display: none;"></div>
+
+        <button class="btn" id="generateBtn" onclick="generateQR()">Generate QR Code</button>
+
+        <div class="qr-result" id="qrResult">
+            <h3>Your QR Code</h3>
+            <canvas id="qrCanvas" class="qr-canvas"></canvas>
+            <button class="btn download-btn" onclick="downloadQR()">Download QR Code</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedService = '';
+        let qrDataURL = '';
+
+        // Service selection
+        document.querySelectorAll('.service-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                document.querySelectorAll('.service-option').forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked option
+                option.classList.add('active');
+                
+                // Hide all dynamic fields
+                document.querySelectorAll('.dynamic-fields').forEach(field => {
+                    field.classList.remove('show');
+                });
+                
+                // Show relevant fields
+                selectedService = option.dataset.service;
+                const targetFields = document.getElementById(`${selectedService}-fields`);
+                if (targetFields) {
+                    targetFields.classList.add('show');
+                }
+                
+                updatePreview();
+            });
+        });
+
+        // Add input listeners for real-time preview and character counting
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', updatePreview);
+            if (input.id === 'whatsapp-message') {
+                input.addEventListener('input', updateCharCount);
+            }
+        });
+
+        function updatePreview() {
+            // Hide preview completely to avoid ugly URL display
+            const preview = document.getElementById('preview');
+            preview.style.display = 'none';
+        }
+
+        // Character counter for WhatsApp
+        function updateCharCount() {
+            const whatsappMessage = document.getElementById('whatsapp-message');
+            const charCount = document.getElementById('char-count');
+            
+            if (whatsappMessage && charCount) {
+                const currentLength = whatsappMessage.value.length;
+                charCount.textContent = `(${currentLength}/220)`;
+                
+                // Change color based on character count
+                if (currentLength > 200) {
+                    charCount.style.color = '#ff6b6b';
+                } else if (currentLength > 180) {
+                    charCount.style.color = '#ffa726';
+                } else {
+                    charCount.style.color = '#666';
+                }
+            }
+        }
+
+        function generateQR() {
+            if (!selectedService) {
+                alert('Please select a service first');
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            let qrData = '';
+
+            switch(selectedService) {
+                case 'whatsapp':
+                    const whatsappNumber = document.getElementById('whatsapp-number').value;
+                    const whatsappMessage = document.getElementById('whatsapp-message').value;
+                    if (!whatsappNumber || !whatsappMessage) {
+                        alert('Please fill in all WhatsApp fields');
+                        return;
+                    }
+                    qrData = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+                    break;
+
+                case 'linkedin':
+                    const linkedinUrl = document.getElementById('linkedin-url').value;
+                    if (!linkedinUrl) {
+                        alert('Please enter your LinkedIn URL');
+                        return;
+                    }
+                    qrData = linkedinUrl;
+                    break;
+
+                case 'email':
+                    const email = document.getElementById('email-address').value;
+                    const subject = document.getElementById('email-subject').value;
+                    const emailMessage = document.getElementById('email-message').value;
+                    if (!email) {
+                        alert('Please enter your email address');
+                        return;
+                    }
+                    qrData = `mailto:${email}?subject=${encodeURIComponent(subject || '')}&body=${encodeURIComponent(emailMessage || '')}`;
+                    break;
+
+                case 'github':
+                    const githubUrl = document.getElementById('github-url').value;
+                    if (!githubUrl) {
+                        alert('Please enter your GitHub URL');
+                        return;
+                    }
+                    qrData = githubUrl;
+                    break;
+
+                case 'twitter':
+                    const twitterUrl = document.getElementById('twitter-url').value;
+                    if (!twitterUrl) {
+                        alert('Please enter your Twitter/X URL');
+                        return;
+                    }
+                    qrData = twitterUrl;
+                    break;
+
+                default:
+                    alert('Please select a valid service');
+                    return;
+            }
+
+            // Generate QR code
+            const canvas = document.getElementById('qrCanvas');
+            try {
+                const qr = new QRious({
+                    element: canvas,
+                    value: qrData,
+                    size: 300,
+                    background: '#ffffff',
+                    foreground: '#000000',
+                    level: 'M'
+                });
+                
+                // Store the data URL for download
+                qrDataURL = canvas.toDataURL();
+                
+                // Show result
+                document.getElementById('qrResult').style.display = 'block';
+                document.getElementById('qrResult').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error(error);
+                alert('Error generating QR code: ' + error.message);
+            }
+        }
+
+        function downloadQR() {
+            if (!qrDataURL) {
+                alert('Please generate a QR code first');
+                return;
+            }
+
+            const name = document.getElementById('name').value || 'User';
+            
+            // Create a new canvas for the final image with service logo
+            const finalCanvas = document.createElement('canvas');
+            const ctx = finalCanvas.getContext('2d');
+            
+            // Set canvas size to 1080x1080
+            finalCanvas.width = 1080;
+            finalCanvas.height = 1080;
+            
+            // Fill white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 1080, 1080);
+            
+            // Create QR code image
+            const qrImg = new Image();
+            qrImg.onload = function() {
+                // Draw QR code (centered, with padding for text at bottom)
+                const qrSize = 800;
+                const qrX = (1080 - qrSize) / 2;
+                const qrY = 50;
+                ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+                
+                // Draw service logo in center of QR code
+                drawServiceLogo(ctx, qrX + qrSize/2, qrY + qrSize/2);
+                
+                // Draw text at bottom
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                const text = `Hi I'm ${name}, Let's connect !!!`;
+                ctx.fillText(text, 540, 950);
+                
+                // Download the final image
+                const link = document.createElement('a');
+                link.download = `${name}_${selectedService}_QR.png`;
+                link.href = finalCanvas.toDataURL();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            qrImg.src = qrDataURL;
+        }
+        
+        function drawServiceLogo(ctx, centerX, centerY) {
+            const logoSize = 100;
+            const logoX = centerX - logoSize/2;
+            const logoY = centerY - logoSize/2;
+            
+            // Draw white background circle
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, logoSize/2 + 10, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw service-specific logo
+            ctx.save();
+            ctx.translate(logoX, logoY);
+            
+            switch(selectedService) {
+                case 'whatsapp':
+                    drawWhatsAppLogo(ctx, logoSize);
+                    break;
+                case 'linkedin':
+                    drawLinkedInLogo(ctx, logoSize);
+                    break;
+                case 'email':
+                    drawEmailLogo(ctx, logoSize);
+                    break;
+                case 'github':
+                    drawGitHubLogo(ctx, logoSize);
+                    break;
+                case 'twitter':
+                    drawTwitterLogo(ctx, logoSize);
+                    break;
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawWhatsAppLogo(ctx, size) {
+            ctx.fillStyle = '#25D366';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('W', size/2, size * 0.7);
+        }
+        
+        function drawLinkedInLogo(ctx, size) {
+            ctx.fillStyle = '#0A66C2';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('in', size/2, size * 0.7);
+        }
+        
+        function drawEmailLogo(ctx, size) {
+            ctx.fillStyle = '#EA4335';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('@', size/2, size * 0.7);
+        }
+        
+        function drawGitHubLogo(ctx, size) {
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('G', size/2, size * 0.7);
+        }
+        
+        function drawTwitterLogo(ctx, size) {
+            ctx.fillStyle = '#1DA1F2';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('X', size/2, size * 0.7);
+        }
+
+        // Initialize with default messages
+        document.getElementById('email-subject').value = 'Let\'s Connect & Collaborate 🚀';
+        document.getElementById('email-message').value = 'Hi there! It was great meeting you at the meetup. I\'d love to stay connected and explore potential collaboration opportunities. Looking forward to hearing from you!';
+        document.getElementById('linkedin-message').value = 'Great meeting you! Let\'s connect and grow our professional network together. Looking forward to collaborating and sharing insights! 🚀';
+        document.getElementById('whatsapp-message').value = 'Hi! Thanks for connecting with me at the meetup. I\'d love to stay in touch and explore potential collaboration opportunities. Looking forward to our conversation! 👋🚀';
+        
+        // Initialize character counter
+        updateCharCount();
+    </script>
+</body>
+</html>
