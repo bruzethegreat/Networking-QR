@@ -1,21 +1,5 @@
 # 🚀 Networking QR Code Generator
 
----
-
-## 📋 Table of Contents
-
-* [Overview](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#overview)
-* [Features](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#features)
-* [Demo](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#demo)
-* [Installation](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#installation)
-* [Usage](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#usage)
-* [Supported Platforms](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#supported-platforms)
-* [Screenshots](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#screenshots)
-* [Technical Details](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#technical-details)
-* [Contributing](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#contributing)
-* [License](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#license)
-* [Author](https://claude.ai/chat/edac8065-2048-4e51-8bc3-0a27f6c56fe7#author)
-
 ## 🌟 Overview
 
 The **Networking QR Code Generator** is a sleek, modern web application that creates professional QR codes for networking events, conferences, and business meetings. Say goodbye to manually typing contact information - just scan and connect!
@@ -58,12 +42,6 @@ Perfect for:
 * Input validation and error handling
 * Pre-filled professional templates
 * One-click download functionality
-
-## 🎬 Demo
-
-![QR Code Generator Demo](https://via.placeholder.com/800x400/000000/FFFFFF?text=QR+Code+Generator+Demo)
-
-*Experience the live demo: [Insert your demo link here]*
 
 ## 🛠 Installation
 
@@ -133,8 +111,6 @@ Fork this repository and enable GitHub Pages in your repository settings.
 | 📧**Email**      | Subject line, Body message          | Formal communication       |
 | 👨‍💻**GitHub** | Profile showcase                    | Developer networking       |
 | 🐦**Twitter/X**  | Social following                    | Social media connections   |
-
-## 📸 Screenshots
 
 ### Main Interface
 
